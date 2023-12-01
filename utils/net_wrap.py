@@ -39,7 +39,38 @@ def fold_bn_into_conv(conv_module, bn_module):
 def wrap_modules_in_net(net,cfg):
     wrapped_modules={}
     module_dict={}
-    module_types = {"qkv":"qlinear_qkv", "proj":'qlinear_proj', 'fc1':'qlinear_MLP_1', 'fc2':"qlinear_MLP_2", 'head':'qlinear_classifier','matmul1':"qmatmul_qk", 'matmul2':"qmatmul_scorev", "reduction": "qlinear_reduction"}
+    # module_types = {"qkv":"qlinear_qkv",
+    #  "out_proj":'qlinear_proj',
+
+    #  "proj":'qlinear_proj',
+    #  'linear1':'qlinear_MLP_1', 
+    #  'fc1':'qlinear_MLP_1', 
+    #  'linear2':"qlinear_MLP_2", 
+
+    #  'fc2':"qlinear_MLP_2", 
+    #  'head':'qlinear_classifier',
+    #  'matmul1':"qmatmul_qk", 
+    #  'matmul2':"qmatmul_scorev", 
+    #  "reduction": "qlinear_reduction"}
+
+    module_types = {"out_proj":"qlinear_qkv",
+        "k_proj":'qlinear_proj',
+        "v_proj":'qlinear_proj',
+        "q_proj":'qlinear_proj',
+        "0":'qlinear_proj',
+        "1":'qlinear_proj',
+        "2":'qlinear_proj',
+        "class_embed":'qlinear_proj',
+
+        "proj":'qlinear_proj',
+
+        'linear1':'qlinear_MLP_1', 
+        'linear2':"qlinear_MLP_2",
+        'class_labels_classifier':'qlinear_classifier',
+        'matmul1':"qmatmul_qk", 
+        'matmul2':"qmatmul_scorev", 
+        "reduction": "qlinear_reduction"}
+
     
     it=[(name,m) for name,m in net.named_modules()]
     for name,m in it:
