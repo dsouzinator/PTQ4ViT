@@ -228,7 +228,7 @@ class HessianQuantCalibrator(QuantCalibrator):
         # get raw_pred as target distribution 
         with torch.no_grad():
             for inp, _ in self.calib_loader:
-                raw_pred = self.net(inp.cuda())
+                raw_pred = self.net(inp.cuda(), return_dict=False)[0]
                 raw_pred_softmax = F.softmax(raw_pred, dim=-1).detach()
             torch.cuda.empty_cache()
 
@@ -308,7 +308,7 @@ class HessianQuantCalibrator(QuantCalibrator):
         # get raw_pred as target distribution 
         with torch.no_grad():
             for inp, _ in self.calib_loader:
-                raw_pred = self.net(inp.cuda())
+                raw_pred = self.net(inp.cuda(), return_dict=False)[0]
                 raw_pred_softmax = F.softmax(raw_pred, dim=-1).detach()
             torch.cuda.empty_cache()
 
@@ -334,7 +334,7 @@ class HessianQuantCalibrator(QuantCalibrator):
                 for batch_st in range(0,self.calib_loader.batch_size,self.batch_size):
                     self.net.zero_grad()
                     inp_ = inp[batch_st:batch_st+self.batch_size].cuda()
-                    pred = self.net(inp_)
+                    pred = self.net(inp_, return_dict=False)[0]
                     loss = F.kl_div(F.log_softmax(pred, dim=-1), raw_pred_softmax[batch_st:batch_st+self.batch_size], reduction="batchmean")
                     loss.backward()
                 del inp, target, pred, loss
