@@ -97,11 +97,12 @@ def experiment_basic(net='vit_base_patch16_384', config="PTQ4ViT"):
     """
     quant_cfg = init_config(config)
     # net = get_net(net)
-    net = DetrForObjectDetection.from_pretrained("facebook/detr-resnet-50").cuda()
+    # net = DetrForObjectDetection.from_pretrained("facebook/detr-resnet-50").cuda()
+    net = torch.hub.load("facebookresearch/detr", "detr_resnet50", pretrained=True).cuda()
     
     wrapped_modules = net_wrap.wrap_modules_in_net(net,quant_cfg)
     
-    g=datasets.ViTImageNetLoaderGenerator('/datasets/imagenet','imagenet',32,32,16,kwargs={"model":net})
+    g=datasets.ViTImageNetLoaderGenerator('/datasets/imagenet','imagenet',1,1,2,kwargs={"model":net})
     test_loader=g.test_loader()
     calib_loader=g.calib_loader(num=32)
     
